@@ -1,43 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.fers.util;
+
 import java.sql.Connection;
 import java.sql.Statement;
-/**
- *
- * @author ndukw
- */
+
 public class DatabaseInitializer {
+
     public static void initialize() {
-
-        String createIncidentTable = """
-            CREATE TABLE IF NOT EXISTS incidents (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT NOT NULL,
-                location TEXT NOT NULL,
-                severity INTEGER NOT NULL,
-                timestamp TEXT NOT NULL
-            );
-        """;
-
-        String createCheckInTable = """
-            CREATE TABLE IF NOT EXISTS checkins (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                userId TEXT NOT NULL,
-                incidentId INTEGER NOT NULL,
-                status TEXT NOT NULL,
-                timestamp TEXT NOT NULL,
-                FOREIGN KEY (incidentId) REFERENCES incidents(id)
-            );
-        """;
 
         try (Connection conn = DatabaseUtil.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute(createIncidentTable);
-            stmt.execute(createCheckInTable);
+            // USERS
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    status TEXT
+                )
+            """);
+
+            // INCIDENTS
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS incidents (
+                    incident_id INTEGER PRIMARY KEY,
+                    type TEXT NOT NULL,
+                    start_time TEXT NOT NULL,
+                    active INTEGER NOT NULL
+                )
+            """);
+
+            // CHECK-INS
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS checkins (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    incident_id INTEGER NOT NULL,
+                    status TEXT NOT NULL,
+                    timestamp TEXT NOT NULL,
+                    UNIQUE(user_id, incident_id),
+                    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
+                    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                )
+            """);
 
             System.out.println("Database tables initialized successfully.");
 
