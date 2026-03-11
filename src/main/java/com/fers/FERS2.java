@@ -8,8 +8,6 @@ import com.fers.model.User;
 import com.fers.service.CheckInService;
 import com.fers.service.IncidentService;
 import com.fers.service.UserService;
-import com.fers.util.DatabaseSetup;
-import com.fers.util.DatabaseUtil;
 import com.fers.util.DatabaseInitializer;
 import com.fers.util.DatabaseVerifier;
 import java.sql.SQLException;
@@ -25,8 +23,8 @@ public class FERS2 {
         System.out.println("FERS backend ready.");
         DatabaseVerifier.verifyTables();
         System.out.println("FERS backend ready. ");
-        DatabaseSetup.initialize();
-        DatabaseUtil.getConnection();
+        //DatabaseSetup.initialize();
+        //DatabaseUtil.getConnection();
         System.out.println("Databse initialized successfully.");
         UserService userService = new UserService();
         IncidentService incidentService = new IncidentService();
@@ -58,39 +56,42 @@ public class FERS2 {
                     userService.addUser(new User(id, name));
                     System.out.println("User Registered.");
                     break;
-                case 2:
-                    System.out.print("Enter incident ID: ");
-                    int incidentId = scanner.nextInt();
-                    scanner.nextLine();
+                case 2: 
                     System.out.print("Enter incident type: ");
                     String type = scanner.nextLine();
-                    incidentService.createIncidentInDatabase(type);
-                    incidentService.createIncident(new Incident(incidentId, type));
-                    System.out.println("Incident created.");
+                    Incident incident = incidentService.createIncident(type);
+                    System.out.println("Incident created: " + incident);
                     break;
                 case 3:
-                    if (!incidentService.hasActiveIncident()){
+                    if (!incidentService.hasActiveIncident()) {
                         System.out.println("No active incident.");
                         break;
                     }
+
                     System.out.print("Enter user ID: ");
                     int userId = scanner.nextInt();
-                    scanner.nextLine(); User user = userService.getUserById(userId);
-                    if (user == null){
+                    scanner.nextLine();
+
+                    User user = userService.getUserById(userId);
+                    if (user == null) {
                         System.out.println("User not found.");
                         break;
                     }
+
                     System.out.println("1 = SAFE, 2 = NEED_HELP");
                     int statusChoice = scanner.nextInt();
+
                     User.Status status = (statusChoice == 1)
                             ? User.Status.SAFE
                             : User.Status.NEED_HELP;
-                    checkInService.checkInUSer(
+
+                    String result = checkInService.checkInUser(
                             user,
                             incidentService.getActiveIncident().getIncidentId(),
                             status
                     );
-                    System.out.println("Check-in record. ");
+
+                    System.out.println(result);
                     break;
                 case 4:
                     for(User u : userService.getAllUsers()){

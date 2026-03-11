@@ -1,28 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.fers.util;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author ndukw
- */
-public class DatabaseUtil {
-     private static final String DB_PATH =
-            Paths.get("data", "fers.db").toAbsolutePath().toString();
 
-    private static final String DB_URL =
-            "jdbc:sqlite:" + DB_PATH;
-
-    public static Connection getConnection() {
-        try {
-            return DriverManager.getConnection(DB_URL);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database at: " + DB_PATH, e);
+public class DatabaseUtil{
+    private static final String DB_FOLDER = "data";
+    private static final String DB_FILE = "fers.db";
+    private static final String DB_URL;
+    
+    static{
+        try{
+            Path folder = Paths.get(DB_FOLDER);
+            if (!Files.exists(folder)){
+                Files.createDirectories(folder);
+            }
+            Path dbPath = folder.resolve(DB_FILE);
+            DB_URL = "jdbc:sqlite:" + dbPath.toAbsolutePath();
+        } catch (Exception e){
+            throw new RuntimeException("Failed to initialize databse path", e);
         }
+    }
+    public static Connection getConnection()throws SQLException{
+        return DriverManager.getConnection(DB_URL);
     }
 }
