@@ -80,4 +80,30 @@ public class CheckInDAO {
 
         return results;
     }
+    /**
+     * Return the count of check-ins grouped by status for a specific incident.
+     */
+    
+    public static int countBystatus(int incidentId, User.Status status){
+        String sql = """
+            SELECT COUNT(*)
+            FROM checkins
+            WHERE incident_id = ? AND status = ?           
+        """;
+        try(Connection conn = DatabaseUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+           ps.setInt(1, incidentId);
+           ps.setString(2, status.name());
+           
+           ResultSet rs = ps.executeQuery();
+           
+           if (rs.next()){
+               return rs.getInt(1);
+           }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
 }

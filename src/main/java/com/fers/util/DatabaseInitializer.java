@@ -3,14 +3,26 @@ package com.fers.util;
 import java.sql.Connection;
 import java.sql.Statement;
 
+/**
+ * Initializes the SQLite database by creating required tables
+ * if they do not already exist.
+ *
+ * Tables created:
+ * - users
+ * - incidents
+ * - checkins
+ */
 public class DatabaseInitializer {
+    /**
+     * Creates all necessary database tables for the FERS system.
+     */
 
     public static void initialize() {
 
         try (Connection conn = DatabaseUtil.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // USERS
+            // USERS TABLE
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     user_id INTEGER PRIMARY KEY,
@@ -19,7 +31,7 @@ public class DatabaseInitializer {
                 )
             """);
 
-            // INCIDENTS
+            // INCIDENTS TABLE
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS incidents (
                     incident_id INTEGER PRIMARY KEY,

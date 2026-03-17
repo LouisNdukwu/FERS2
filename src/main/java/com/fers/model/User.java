@@ -15,13 +15,13 @@ public class User {
     
     public enum Status{
         SAFE,
-        NEED_HELP,
-        UNKNOWN
+        INJURED,
+        MISSING
     }
     public User(int id, String name){
         this.id = id;
         this.name = name;
-        this.status = Status.UNKNOWN;
+        this.status = Status.MISSING;
     }
     public int getId(){
         return id;

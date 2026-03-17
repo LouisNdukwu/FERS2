@@ -83,7 +83,7 @@ public class FERS2 {
 
                     User.Status status = (statusChoice == 1)
                             ? User.Status.SAFE
-                            : User.Status.NEED_HELP;
+                            : User.Status.INJURED;
 
                     String result = checkInService.checkInUser(
                             user,

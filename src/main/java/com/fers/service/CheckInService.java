@@ -43,4 +43,24 @@ public class CheckInService {
     public List<CheckIn> getCheckInsForIncident(int incidentId) {
         return CheckInDAO.getCheckInsByIncident(incidentId);
     }
+    /**
+ * Generates a summary report for an incident.
+ */
+    public void printIncidentSummary(int incidentId) {
+
+    int safe = CheckInDAO.countBystatus(incidentId, User.Status.SAFE);
+    int injured = CheckInDAO.countBystatus(incidentId, User.Status.INJURED);
+    int missing = CheckInDAO.countBystatus(incidentId, User.Status.MISSING);
+
+    int total = safe + injured + missing;
+
+    System.out.println("\n===== Incident Summary =====");
+    System.out.println("Incident ID: " + incidentId);
+    System.out.println("---------------------------");
+    System.out.println("SAFE: " + safe);
+    System.out.println("INJURED: " + injured);
+    System.out.println("MISSING: " + missing);
+    System.out.println("---------------------------");
+    System.out.println("TOTAL CHECK-INS: " + total);
+    }
 }
