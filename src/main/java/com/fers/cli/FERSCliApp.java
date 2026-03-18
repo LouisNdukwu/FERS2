@@ -70,10 +70,16 @@ public class FERSCliApp {
                     break;
 
                 case 5:
-                    running = false;
-                    System.out.println("System exiting...");
+                    listIncidents();
                     break;
-
+                case 6:
+                    listUsers();
+                    break;
+                case 7:
+                    closeIncident();
+                    break;
+                case 8:
+                    System.out.println("Exiting system.......");
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
@@ -91,7 +97,10 @@ public class FERSCliApp {
         System.out.println("2. Register User");
         System.out.println("3. Check-In User");
         System.out.println("4. View Incident Summary");
-        System.out.println("5. Exit");
+        System.out.println("5. List All Incidents");
+        System.out.println("6. List All Users");
+        System.out.println("7. Close Incident");
+        System.out.println("8. Exit");
         System.out.print("Select option: ");
     }
 
@@ -183,5 +192,50 @@ public class FERSCliApp {
     scanner.nextLine();
 
     checkInService.printIncidentSummary(incidentId);
+    }
+    
+    private static void listIncidents() {
+
+        List<Incident> incidents = IncidentDAO.getAllIncidents();
+
+        System.out.println("\n===== All Incidents =====");
+
+        if (incidents.isEmpty()) {
+            System.out.println("No incidents found.");
+            return;
+        }
+
+        for (Incident incident : incidents) {
+            System.out.println(incident);
+        }
+    
+    }
+    
+    private static void listUsers(){
+        List<User> users = UserDAO.getAllUsers();
+        System.out.println("\n=======All Users======");
+        
+        if(users.isEmpty()){
+            System.out.println("No users found.");
+            return;
+        }
+        
+        for(User user: users){
+            System.out.println(user);
+        }
+    }
+    
+    private static void closeIncident(){
+        System.out.print("Enter Incident ID to close: ");
+        int incidentId = scanner.nextInt();
+        scanner.nextLine();
+        
+        boolean success = IncidentDAO.closeIncident(incidentId);
+        
+        if(success){
+            System.out.println("Incident closed successfully.");
+        } else{
+            System.out.println("Failed to clsoe incident.");
+        }
     }
 }

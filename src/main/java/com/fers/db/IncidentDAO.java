@@ -2,7 +2,8 @@ package com.fers.db;
 
 import com.fers.model.Incident;
 import com.fers.util.DatabaseUtil;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,5 +72,54 @@ public class IncidentDAO {
     } catch (Exception e) {
         e.printStackTrace();
     }
+    
+    }
+    /**
+ * Retrieves all incidents from the database.
+ */
+public static List<Incident> getAllIncidents() {
+
+    List<Incident> incidents = new ArrayList<>();
+
+    String sql = "SELECT * FROM incidents";
+
+    try (Connection conn = DatabaseUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Incident incident = new Incident(
+                    rs.getInt("incident_id"),
+                    rs.getString("type")
+            );
+            incidents.add(incident);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return incidents;
+    }
+    /**
+ * Marks an incident as inactive.
+ */
+public static boolean closeIncident(int incidentId) {
+
+    String sql = "UPDATE incidents SET active = 0 WHERE incident_id = ?";
+
+    try (Connection conn = DatabaseUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, incidentId);
+
+        int rowsUpdated = ps.executeUpdate();
+        return rowsUpdated > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
     }
 }
