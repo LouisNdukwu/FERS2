@@ -37,6 +37,7 @@ public class Incident {
     }
     @Override
     public String toString(){
+        String status = active ? "ACTIVE" : "CLOSED";
          return "Incident{" + "incidentId=" + incidentId + ", type='" + type + '\'' + ", startTime=" + startTime + ", active=" + active + '}';
     }
 }

@@ -154,6 +154,7 @@ public class FERSCliApp {
      * with a status such as SAFE, INJURED, or MISSING.
      */
     private static void checkInUser() {
+        
 
         System.out.print("Enter User ID: ");
         int userId = scanner.nextInt();
@@ -164,6 +165,16 @@ public class FERSCliApp {
 
         System.out.print("Enter Status (SAFE / INJURED / MISSING): ");
         String statusInput = scanner.nextLine();
+        
+        Incident incident = IncidentDAO.getIncidentById(incidentId);
+        if (incident == null){
+            System.out.println("Incident not found.");
+            return;
+        }
+        if (!incident.isActive()){
+            System.out.println("Cannot check in - incident is CLOSED.");
+            return;
+        }
 
         // Convert user input into the User.Status enum
         User.Status status = User.Status.valueOf(statusInput.toUpperCase());
